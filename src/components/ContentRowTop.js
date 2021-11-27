@@ -1,54 +1,73 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ContentRowMovies from './ContentRowMovies';
 import LastMovieInDb from './LastMovieInDb';
 import GenresInDb from './GenresInDb';
 
-const ContentRowTop = () => {
-	let data = [
-		{
-			title: "Movies in Data Base",
-			color: "primary",
-			amount: 21,
-			icon: "fa-film"
-		},
-		{
-			title: "Total awards",
-			color: "success",
-			amount: 79,
-			icon: "fa-award"
-		},
-		{
-			title: "Actors quantity",
-			color: "warning",
-			amount: 21,
-			icon: "fa-user"
+class ContentRowTop extends Component {
+	constructor(){
+		super();
+		this.state = {
+			movies: {
+				color: "primary",
+				title: "Movies in Data Base",
+				amount: "",
+				icono: "fa-film"
+			},
+			awards:{
+				color: "success",
+				title: "Total awards",
+				amount: "",
+				icono: "fa-award"
+			},
+			actors: {
+				color: "warning",
+				title: "Actors quantity",
+				amount: "",
+				icono: "fa-user"
+			}
 		}
-
-	]
-    return (
-        <div className="container-fluid">
-					<div className="d-sm-flex align-items-center justify-content-between mb-4">
-						<h1 className="h3 mb-0 text-gray-800">App Dashboard</h1>
-					</div>
-					<div className="row">
-						{
-							data.map((item, i) => {
-							 return <ContentRowMovies 
-										key={item.title+i}
-							 			title={item.title}
-										color={item.color} 
-										amount={item.amount} 
-										icon={item.icon} 
-									/>
-							})
-						}
-					</div>
-					<div className="row">
-						<LastMovieInDb/>
-						<GenresInDb/>
-					</div>
+	}
+	render() {
+		return (
+			<div className="container-fluid">
+				<div className="d-sm-flex align-items-center justify-content-between mb-4">
+					<h1 className="h3 mb-0 text-gray-800">App Dashboard</h1>
 				</div>
-    )
+				<div className="row">
+					 <ContentRowMovies
+						{...this.state.movies}
+					 />
+				</div>
+				<div className="row">
+					<LastMovieInDb />
+					<GenresInDb />
+				</div>
+			</div>
+		)
+	}
+
+	async apiCal(url, handler){
+		try {
+			let response = await fetch(url)
+			let result = await response.json();
+			handler(result)
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+	getTotalMovies = (info) => {
+		this.setState({
+			movies:{
+				...this.state.movies,
+				amount: info.data
+			}
+		})
+	}
+
+	async componentDidMount(){
+		await this.apiCal('http://localhost:3001/api/movies/total')
+	}
 }
 
 export default ContentRowTop;

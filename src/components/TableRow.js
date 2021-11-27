@@ -1,19 +1,21 @@
 import React from "react";
 
-const TableRow = ({title, lenght, rating, genres, awards}) => {
+const TableRow = ({title, lenght, rating, genre, awards}) => {
     return(
     <tr>
       <td>{title}</td>
       <td>{lenght}</td>
       <td>{rating}</td>
-      <td>
-          <ul>
-          {genres.map((genre, index) => <li key = {genre + index}> {genre}</li>)}
-          </ul>
-      </td>
+      {
+        genre ? <td>{genre.name}</td> : <td className="text-danger">Sin genero</td>
+      }
+      
       <td>{awards}</td>
     </tr>
     );
+}
+TableRow.defaultProps = {
+  genre : "Sin genero"
 }
 
 export default TableRow;
